@@ -182,6 +182,7 @@
                 let current_question = slc_q.getAttribute("current_question");
                 var item = {id:q_id, select_answer: ans,currect:data_crt,currect_answer:currect_answer,current_question:current_question};
                 addItem(item);
+
                 showResult(nid,pid,q_id);
                 document.querySelector('.q_validetion_'+pid).style.backgroundColor ='green';
                 document.querySelector('.q_validetion_'+pid).innerHTML ='';
@@ -203,14 +204,10 @@
             } else {
                 score[index] = item;
             }
-            
         }
         
         function showResult(nid,pid,q_id){
-            //     for (var i = 0; i < score; i++) {
-            //     var item = {score[i].id, score[i].select_answer,score[i].currect,score[i].currect_answer,score[i].current_question};
-            // }
-                          console.log(score);  
+            console.log(score);  
         }
     </script>
 </body>
