@@ -1,0 +1,210 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .test-assignment {
+            width: 50%;
+            text-align: left;
+            display: inline-block;
+            background-color: dodgerblue;
+            margin-bottom: 10px;
+        }
+        
+        .tab {
+            display: none;
+        }
+        
+        input#quiz_id {
+            margin-top: 0;
+        }
+        
+        button {
+            background: #00800099;
+            border: 1px solid #00800099;
+            color: #fff;
+            padding: 5px 11px 5px 11px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        
+        span {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .test-assignment h3 {
+            font-size: 15px;
+            text-align: left;
+            color: white;
+            padding: 11px;
+            margin: 0;
+        }
+        
+        ul {
+            padding: 0;
+        }
+        
+        #area {
+            display: none;
+        }
+        
+        li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            background: #277ea621;
+            margin-bottom: 4px;
+            padding: 12px;
+            border: 1px solid #277ea66e;
+            width: 100%;
+            max-width: 377px;
+            font-size: 14px;
+        }
+        
+        .flex {
+            margin-top: 2rem;
+        }
+        
+        select {
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .step {
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbbbbb;
+            border: none;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.5;
+        }
+        
+        .step.active {
+            opacity: 1;
+        }
+        /* Mark the steps that are finished and valid: */
+        
+        .step.finish {
+            background-color: #04AA6D;
+        }
+        
+        @media only screen and (max-width: 768px) {
+            .test-assignment {
+                WIDTH: 100%;
+            }
+        }
+    </style>
+
+
+
+
+</head>
+
+<body>
+
+    <div class="test-assignment">
+        <h3>JS Quiz</h3>
+    </div>
+    <section class="regular JS" id="my-JS">
+    </section>
+
+
+    <script type="text/javascript">
+        var ques = document.getElementById('my-JS');
+        const score = [];
+
+        function fetchapi() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    const JS = JSON.parse(this.responseText).JS;
+                    var jsquiz = [];
+                    var jsquiz1 = [];
+                    var jsquiz2 = [];
+                    var jsquiz3 = [];
+                    var btn =[];                
+                    for (var i = 0; i < JS.length; i++) {
+                        var i_next =i+1;
+                        var i_pre =(i==0)?0:i-1;
+                        var quiz_question = `<div class="quiz_title q_sid_${i}" data-qid="${JS[i].id}" JS-value="${JS[i].question}">${JS[i].question}</div><span class="q_validetion_${i}"></span>`;
+                        jsquiz1 = jsquiz.concat(quiz_question);
+                        var option = JS[i].options;
+                        var showoptions = [];
+                        for (var key in JS[i].options[0]) {
+                            var crt =0;
+                            if(JS[i].options[0][key]==JS[i].answer){var crt =1;}
+                            var quiz_options = `<li class="li_validetion_${i}">
+                            <input data-currect="${crt}" data-option="${key}" type="radio" id="myCheck${key}_${i}" data-custom-ids="${JS[i].id}_${i}_${crt}_${key}" class="quiz_id validetion_${i} ans_${key}" name="QUZ" value="${JS[i].options[0][key]}" currect_answer="${JS[i].answer}" current_question="${JS[i].question}">
+                            <label for="myCheck${key}_${i}">${JS[i].options[0][key]}</label></li>`;
+                            showoptions = showoptions.concat(quiz_options);
+                        }
+                        jsquiz3 = jsquiz.concat(`${jsquiz1}`);
+                        var style123 ="";
+                        var stylepre ="";
+                        if(i==0){
+                            var style123 ="style='display:block;'";
+                            var stylepre ="style='display:none;'";
+                        }
+                        btn =`<div class="btn">
+                        <button type="button" class="prevBtn" onclick="prevBtn(${i},${i_pre},${JS[i].id})" ${stylepre} >Previous</button>
+                        <button type="button" class="nextBtn" onclick="nextBtn(${i_next},${i},${JS[i].id})">Next</button>
+                    </div>`;
+                        jsquiz2 = jsquiz2.concat(`<div ${style123} data-total="${JS.length}" class="tab questions_qz q_${i}">${jsquiz3} <ul>${showoptions}</ul>${btn}</div>`);
+
+                    }
+                    document.getElementById("my-JS").innerHTML += `${jsquiz2}`;
+
+                }
+            };
+            xhttp.open("GET", "data.json", true);
+            xhttp.send();
+        }
+        fetchapi();
+        function nextBtn(nid,pid,q_id){
+            console.log(nid+"--"+pid+"__"+q_id);
+            let slc_q = document.querySelector('.validetion_'+pid+':checked');
+            document.querySelector('.q_validetion_'+pid).style.backgroundColor ='red';
+            document.querySelector('.q_validetion_'+pid).innerHTML ='Select any one question';
+            if(slc_q.length!=''){
+                document.querySelector('.q_validetion_'+pid).style.backgroundColor ='green';
+                document.querySelector('.q_validetion_'+pid).innerHTML ='';
+
+                document.querySelector('.tab').style.display='none';
+                document.querySelector('.q_'+pid).style.display='none';
+                document.querySelector('.q_'+nid).style.display='block';
+                var ans =document.querySelector('.quiz_id:checked').value;
+                let slc_q = document.querySelector('.quiz_id:checked'); 
+                let data_crt = slc_q.getAttribute("data-currect");
+                let currect_answer = slc_q.getAttribute("currect_answer");
+                let current_question = slc_q.getAttribute("current_question");
+                var item = {id:q_id, select_answer: ans,currect:data_crt,currect_answer:currect_answer,current_question:current_question};
+                addItem(item);
+            }
+        }
+        function prevBtn(pid,nid,val){
+            console.log(nid+"--"+pid);
+            document.querySelector('.tab').style.display='none';
+            document.querySelector('.q_'+nid).style.display='block';
+            document.querySelector('.q_'+pid).style.display='none';
+        }
+        function addItem(item) {
+            const index = score.findIndex((e) => e.id === item.id);
+            if (index === -1) {
+                score.push(item);
+            } else {
+                score[index] = item;
+            }
+            console.log(score);
+        }
+        
+    </script>
+</body>
+</html>
