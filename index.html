@@ -155,7 +155,7 @@
                         }
                         btn =`<div class="btn">
                         <button type="button" class="prevBtn" onclick="prevBtn(${i},${i_pre},${JS[i].id})" ${stylepre} >Previous</button>
-                        <button type="button" class="nextBtn" onclick="nextBtn(${i_next},${i},${JS[i].id})">Next</button>
+                        <button data-total="${JS.length}" type="button" class="nextBtn" onclick="nextBtn(${i_next},${i},${JS[i].id})">Next</button>
                     </div>`;
                         jsquiz2 = jsquiz2.concat(`<div ${style123} data-total="${JS.length}" class="tab questions_qz q_${i}">${jsquiz3} <ul>${showoptions}</ul>${btn}</div>`);
 
@@ -174,12 +174,7 @@
             document.querySelector('.q_validetion_'+pid).style.backgroundColor ='red';
             document.querySelector('.q_validetion_'+pid).innerHTML ='Select any one question';
             if(slc_q.length!=''){
-                document.querySelector('.q_validetion_'+pid).style.backgroundColor ='green';
-                document.querySelector('.q_validetion_'+pid).innerHTML ='';
-
-                document.querySelector('.tab').style.display='none';
-                document.querySelector('.q_'+pid).style.display='none';
-                document.querySelector('.q_'+nid).style.display='block';
+                
                 var ans =document.querySelector('.quiz_id:checked').value;
                 let slc_q = document.querySelector('.quiz_id:checked'); 
                 let data_crt = slc_q.getAttribute("data-currect");
@@ -187,6 +182,12 @@
                 let current_question = slc_q.getAttribute("current_question");
                 var item = {id:q_id, select_answer: ans,currect:data_crt,currect_answer:currect_answer,current_question:current_question};
                 addItem(item);
+                showResult(nid,pid,q_id);
+                document.querySelector('.q_validetion_'+pid).style.backgroundColor ='green';
+                document.querySelector('.q_validetion_'+pid).innerHTML ='';
+                document.querySelector('.tab').style.display='none';
+                document.querySelector('.q_'+pid).style.display='none';
+                document.querySelector('.q_'+nid).style.display='block';
             }
         }
         function prevBtn(pid,nid,val){
@@ -202,9 +203,15 @@
             } else {
                 score[index] = item;
             }
-            console.log(score);
+            
         }
         
+        function showResult(nid,pid,q_id){
+            //     for (var i = 0; i < score; i++) {
+            //     var item = {score[i].id, score[i].select_answer,score[i].currect,score[i].currect_answer,score[i].current_question};
+            // }
+                          console.log(score);  
+        }
     </script>
 </body>
 </html>
